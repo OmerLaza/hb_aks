@@ -1,10 +1,10 @@
 # Usage
 1. Install Terraform 0.15 (from [here](https://www.terraform.io/downloads.html "Download Terraform!")).
 2. Export the env variables (you can also place them in the provider block):
-   - ARM_TENANT_ID (you can get it [here](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties))
-   - ARM_SUBSCRIPTION_ID (you can get it [here](https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade))
-   - ARM_CLIENT_ID (you can get it [here](#getting-arm_client_id--arm_client_secret))
-   - ARM_CLIENT_SECRET (you can get it [here](#getting-arm_client_id--arm_client_secret))
+   - ```ARM_TENANT_ID``` (you can get it [here](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties))
+   - ```ARM_SUBSCRIPTION_ID``` (you can get it [here](https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade))
+   - ```ARM_CLIENT_ID``` (you can get it [here](#getting-arm_client_id--arm_client_secret))
+   - ```ARM_CLIENT_SECRET``` (you can get it [here](#getting-arm_client_id--arm_client_secret))
 3. Run ```terraform init```- it might take a bit of time to run since your local Terraform need to install all the Azure package.
 4. Run ```terraform plan``` with ```-var-file='example.tfvars'``` and your own ```tfvars``` file (you can see an example in this repo) to see what your command will create/change if you'll run ```terraform apply```.
 5. Run ```terraform apply``` with ```-var-file='example.tfvars'``` and your own ```tfvars``` file (you can see an example in this repo) to actually create/modify your cloud resources. Make sure to approve the command in the interactive prompt (or else use ```-auto-approve``` with caution).
