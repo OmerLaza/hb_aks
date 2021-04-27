@@ -16,7 +16,7 @@
 
 # Tasks
 ### TODO
-- firewall and/or VNets
+- firewall
 - Choose Subscription
 - identity
 - Node pools
@@ -25,6 +25,7 @@
 - Spot Support
 - policy (as code)
 ### Done
+- VNets
 - sku size
 - tags
 
