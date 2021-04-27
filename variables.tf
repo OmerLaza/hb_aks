@@ -71,3 +71,9 @@ variable "kube_dashboard" {
   description = ""
 }
 
+variable "vent_peer" {
+  type = string
+  default = ""
+  description = "The vent you want to connect to have acsess to this AKS."
+}
+
