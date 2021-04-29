@@ -37,17 +37,6 @@ variable "env" {
   }
 }
 
-# variable "node_pools" {
-#   type = list(map)
-#   description = "list of objects that represent node_pools with statrure of {name: THE_NAME}"
-# }
-
-variable "virtual_network" { # TODO: add vent 
-  type        = string
-  description = ""
-  default     = "" #If no VNet was provided will create new
-}
-
 variable "tags" {
   type        = map(string)
   description = ""
@@ -55,25 +44,18 @@ variable "tags" {
 }
 
 variable "kubernetes_version" {
-  type = string
+  type        = string
   description = "Version of the k8s cluster"
-  default = "1.19.9"
-validation {
-    condition     = contains(["1.18.14", "1.18.17", "1.19.7", "1.19.9", "1.20.2", "1.20.5" ], var.kubernetes_version)
+  default     = "1.19.9"
+  validation {
+    condition     = contains(["1.18.14", "1.18.17", "1.19.7", "1.19.9", "1.20.2", "1.20.5"], var.kubernetes_version)
     error_message = "Your envirerment can be only one of: prod/dev/test."
     # tried to make this dynamic but TF doesn't support it yet :( maybe in TF 0.16
   }
 }
 
-variable "kube_dashboard" {
-  type = bool
-  default = false
-  description = ""
-}
-
 variable "vent_peer" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The vent you want to connect to have acsess to this AKS."
 }
-

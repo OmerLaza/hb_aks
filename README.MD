@@ -16,13 +16,13 @@
 
 # Tasks
 ### TODO
-- firewall
-- Choose Subscription
+- GPU support
+- Auto Scaling
+- Fix network hard coding (ip ranges)
 - identity
 - Node pools
-- Auto Scaling
-- GPU support
 - Spot Support
+- firewall
 - policy (as code)
 ### Done
 - VNets

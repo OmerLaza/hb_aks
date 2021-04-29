@@ -19,8 +19,8 @@ resource "time_static" "createion_timestamp" {}
 locals {
   # Basic tags are tags all resources should have not matter what
   basic_tags = {
-    Project          = var.project_name
-    Environment      = var.env
+    Project             = var.project_name
+    Environment         = var.env
     UTCCreationDateTime = time_static.createion_timestamp.rfc3339
     #TODO: Covert to local timezone
   }
@@ -81,7 +81,7 @@ resource "azurerm_kubernetes_cluster" "main_aks" {
 
   addon_profile {
     kube_dashboard {
-      enabled = var.kube_dashboard
+      enabled = false
     }
   }
 }
