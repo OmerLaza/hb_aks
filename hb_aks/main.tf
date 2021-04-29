@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">= 0.15, < 0.16" # pin the Terraform version to 0.15.X 
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>2.0" # pin the azure rm to compatible 2.0 (or higher version) version 
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
 resource "time_static" "createion_timestamp" {}
 
 
