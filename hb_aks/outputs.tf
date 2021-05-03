@@ -1,3 +1,6 @@
+output "resource_group" {
+  value = azurerm_resource_group.aks_resource_group.name
+}
 
 output "client_certificate" {
   sensitive = true
@@ -5,13 +8,13 @@ output "client_certificate" {
 }
 
 output "kube_config" {
-  # sensitive = true
+  sensitive = true
   value     = azurerm_kubernetes_cluster.main_aks.kube_config
 }
 
 output "kube_admin_config" {
   sensitive = true
-    value     = azurerm_kubernetes_cluster.main_aks.kube_admin_config
+  value     = azurerm_kubernetes_cluster.main_aks.kube_admin_config
 }
 
 output "aks_id" {
