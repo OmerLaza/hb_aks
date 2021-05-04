@@ -25,3 +25,6 @@ output "aks_fqdn" {
   value = azurerm_kubernetes_cluster.main_aks.fqdn
 }
 
+output "aks_name" {
+  value = split("/", azurerm_kubernetes_cluster.main_aks.id)[length(split("/", azurerm_kubernetes_cluster.main_aks.id)) - 1]
+}
