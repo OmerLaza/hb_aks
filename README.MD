@@ -14,13 +14,26 @@ This guide was written using Powershell but should be compatible using Bash.
 2. Run ```terraform init```- it might take a bit of time to run since your local Terraform need to install all the Azure package.
 3. Run ```terraform plan``` with ```-var-file='example.tfvars'``` and your own ```tfvars``` file (you can see an example in this repo) to see what your command will create/change if you'll run ```terraform apply```.
 4. Run ```terraform apply``` with ```-var-file='example.tfvars'``` and your own ```tfvars``` file (you can see an example in this repo) to actually create/modify your cloud resources. Make sure to approve the command in the interactive prompt (or else use ```-auto-approve``` with caution).
-5. You can do the same as the previous commend but with the ```terraform destroy``` command to completely destroy the cloud resources.
+5. Make sure to save the ```aks_name``` & ```resource_group``` out variables of the Terraform apply for the next part.
+6. You can do the same as the previous commend but with the ```terraform destroy``` command to completely destroy the cloud resources.
 
 ## Adding the GPU support
 note about the built in support [here](#AKS-with-built-in-support-for-GPU)
 
 1. cd ```../hb_aks_gpu```
-2. 
+2. Create ```.tfvars``` file like with variables ```aks_resource_group``` & ```aks_name``` with the relevant variables from the previous run of ```terraform apply```.
+3. Run ```terraform plan``` with ```-var-file='example.tfvars'``` and your own ```tfvars``` file (you can see an example in this repo) to see what your command will create/change if you'll run ```terraform apply```.
+4. Run ```terraform apply``` in similar way (aka ```-var-file``` argument) and approve it to create the GPU support in the AKS cluster.
+5. You can destroy the aks config using the ```terraform destroy``` command.
+
+## Test the GPU config
+Based on [this Azure doc](https://docs.microsoft.com/en-us/azure/aks/gpu-cluster#confirm-that-gpus-are-schedulable).
+
+1. run ```az login``` (or equivalent).
+2. run ```az aks get-credentials --resource-group YOUR_RESOURCE_GROUP_NAME --name NAME_OF_YOUR_AKS_CLUSTER```
+this will add the appropriate config to your ```kubectl``` config file (aka kubeconfig).
+3. Run ```kubectl get nodes``` 
+4. Run ```kubectl describe node``` to get list of all your nodes (you can also specify node by adding it's name in the end of the command), each one of them should have ```nvidia.com/gpu``` line under ```Capacity```.
 
 # limitations (current)
 - Only one node pool
@@ -28,7 +41,6 @@ note about the built in support [here](#AKS-with-built-in-support-for-GPU)
 
 # Tasks
 ### TODO
-- GPU support
 - Auto Scaling
 - Fix network hard coding (ip ranges)
 - identity
@@ -37,6 +49,7 @@ note about the built in support [here](#AKS-with-built-in-support-for-GPU)
 - firewall
 - policy (as code)
 ### Done
+- GPU support
 - VNets
 - sku size
 - tags
@@ -51,6 +64,6 @@ note about the built in support [here](#AKS-with-built-in-support-for-GPU)
     **Make sure to save your value,** since it'll be the last time you get it (PS Keep it Super Secret! If someone have it they'll have access to your Azure account).
 
 ## AKS with built in support for GPU
-TODO write this section
+The built in GPU support for AKS (aka built in GPU support) is currently (May 2021) in preview. So I had to configure it 'by hand' using this TF module.
 
-https://docs.microsoft.com/en-us/azure/aks/gpu-cluster
+To see the current AKS + GPU as a service options look [here](https://docs.microsoft.com/en-us/azure/aks/gpu-cluster "AKS + GPU").

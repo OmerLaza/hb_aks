@@ -30,19 +30,27 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.aks_data.kube_config.0.cluster_ca_certificate)
 }
 
+locals {
+  k8s_namespace = "gpu-resources"
+}
+
 resource "kubernetes_namespace" "gpu-resources" {
   metadata {
-    name = "gpu-resources"
+    name = local.k8s_namespace
+    labels = {
+      name = "nvidia-device-plugin-ds"
+    }
   }
 }
 
+
 resource "kubernetes_daemonset" "gpu-resources" {
-  # api_version= "v1"
-  # "kind"= "DaemonSet"
+  # Based on:
+  ## https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/1.0.0-beta4/nvidia-device-plugin.yml
+  ## https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/#official-nvidia-gpu-device-plugin
   metadata {
     name      = "nvidia-device-plugin-daemonset"
-    namespace = "gpu-resources"
-    # namespace = "kube-system"
+    namespace = local.k8s_namespace
   }
   spec {
     selector {
@@ -55,43 +63,34 @@ resource "kubernetes_daemonset" "gpu-resources" {
     }
     template {
       metadata {
-        annotations = {
-          "scheduler.alpha.kubernetes.io/critical-pod" = ""
-        }
         labels = {
           name = "nvidia-device-plugin-ds"
         }
       }
       spec {
         toleration {
-
           key      = "CriticalAddonsOnly"
           operator = "Exists"
-
         }
         toleration {
-
           key      = "nvidia.com/gpu"
           operator = "Exists"
           effect   = "NoSchedule"
-
         }
+        priority_class_name = "system-node-critical"
         container {
-          image = "mcr.microsoft.com/oss/nvidia/k8s-device-plugin=1.11"
+          image = "nvidia/k8s-device-plugin:1.0.0-beta4"
           name  = "nvidia-device-plugin-ctr"
           security_context {
             allow_privilege_escalation = false
             capabilities {
-              drop = [
-                "ALL"
-              ]
+              drop = ["ALL"]
             }
           }
           volume_mount {
             name       = "device-plugin"
             mount_path = "/var/lib/kubelet/device-plugins"
           }
-
         }
         volume {
           name = "device-plugin"
@@ -99,11 +98,7 @@ resource "kubernetes_daemonset" "gpu-resources" {
             path = "/var/lib/kubelet/device-plugins"
           }
         }
-
       }
     }
   }
-
 }
-
-
