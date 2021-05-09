@@ -1,7 +1,7 @@
-# data "kubernetes_all_namespaces" "allns" {
-    
-# }
+output "aks_name" {
+  value = var.aks_name
+}
 
-# output "all-ns" {
-#   value = data.kubernetes_all_namespaces.allns.namespaces
-# }
+output "resource_group" {
+  value = var.aks_resource_group
+}
