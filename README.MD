@@ -2,7 +2,7 @@
 ## General Instaurations
 This guide was written using Powershell but should be compatible using Bash.
 
-1. Install Terraform 0.15 (from [here](https://www.terraform.io/downloads.html "Download Terraform!")).
+1. Install Terraform 0.15 (from [here](https://www.terraform.io/downloads.html "Download latest Terraform!") for the newest version or [here](https://releases.hashicorp.com/terraform/ "Download Terraform!") for older versions).
 2. Export the env variables (you can also place them in the provider block):
    - ```ARM_TENANT_ID``` (you can get it [here](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties))
    - ```ARM_SUBSCRIPTION_ID``` (you can get it [here](https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade))
