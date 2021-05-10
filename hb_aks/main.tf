@@ -86,6 +86,27 @@ resource "azurerm_kubernetes_cluster" "main_aks" {
   }
 }
 
+# Spot
+
+resource "azurerm_kubernetes_cluster_node_pool" "aks_spot" {
+  # as this is MVP we support only one sport resource pool, in the future it should be expended to inclode N spot pools
+  count                 = var.spot_config.spot_vm_number > 0 ? 1 : 0
+  name                  = "spot"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.main_aks.id
+  vm_size               = var.spot_config.spot_vm_size
+  node_count            = var.spot_config.spot_vm_number
+  priority              = "Spot"
+  eviction_policy       = var.spot_config.spot_evection_policy
+  spot_max_price        = var.spot_config.spot_max_price # note: this is the "maximum" price
+  node_labels = {
+    "kubernetes.azure.com/scalesetpriority" = "spot"
+  }
+  node_taints = [
+    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  ]
+}
+
+
 # Network peering
 
 resource "azurerm_virtual_network_peering" "connect_to_aks_aks2client" { #TODO: make this support N networks

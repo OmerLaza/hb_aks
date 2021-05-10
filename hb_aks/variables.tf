@@ -59,3 +59,37 @@ variable "vent_peer" {
   default     = ""
   description = "The vent you want to connect to have acsess to this AKS."
 }
+
+# Spot Args
+
+variable "spot_config" {
+  description = "Block describeing the arguments required for spots"
+  
+  type = object({
+    spot_vm_size         = string
+    spot_vm_number       = number
+    spot_evection_policy = string
+    spot_max_price       = number
+  })
+  default = {
+    spot_vm_size         = "Standard_NC6"
+    spot_vm_number       = 0
+    spot_evection_policy = "Delete"
+    spot_max_price       = 1
+  }
+
+  validation {
+    condition     = var.spot_config.spot_vm_number >= 0
+    error_message = "Number of spot instances should be >= 0 (if 0 no spot will be created)."
+  }
+
+  validation {
+    condition     = contains(["Deallocate", "Delete"], var.spot_config.spot_evection_policy)
+    error_message = "Number of spot instances should be 'Delete' or 'Deallocate'."
+  }
+
+  validation {
+    condition     = var.spot_config.spot_max_price > 0 || var.spot_config.spot_max_price == -1
+    error_message = "Spot Price must be above 0 (or -1)."
+  }
+}
