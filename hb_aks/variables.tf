@@ -59,3 +59,22 @@ variable "vent_peer" {
   default     = ""
   description = "The vent you want to connect to have acsess to this AKS."
 }
+
+variable "new_log_analitics" {
+  type        = bool
+  default     = false
+  description = "Creates new Azure Log Analitics Solution and Azure Log Analytics Workspace and configers the AKS to it."
+}
+
+variable "log_analitics_workspace_address" {
+  type        = string
+  default     = null
+  description = "Adderess of log_analitics_workspace that we want the AKS to send logs to. It lest empty(or null) we will create a new one."
+  # Example: "/subscriptions/SUBSCRIPTION_ID/resourcegroups/RESOURCE_GROUP_ID/providers/microsoft.operationalinsights/workspaces/LOG_ANALITICS_WORKSPACE_NAME"
+}
+
+variable "kube_dashboard" {
+  type        = bool
+  default     = false
+  description = "Should we enable the kube dashboard."
+}

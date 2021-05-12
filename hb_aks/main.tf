@@ -38,7 +38,7 @@ resource "random_string" "random" {
 
 resource "azurerm_resource_group" "aks_resource_group" {
   name     = "${var.project_name}-${random_string.random.result}"
-  location = "West Europe"
+  location = var.location
 }
 
 # Network
@@ -56,6 +56,37 @@ resource "azurerm_subnet" "aks_subnet" {
   resource_group_name  = azurerm_resource_group.aks_resource_group.name
   address_prefixes     = ["10.1.0.0/25"]
 }
+
+# Logs
+
+resource "azurerm_log_analytics_workspace" "new_log_analytics_workspace" {
+  count                 = var.new_log_analitics && var.log_analitics_workspace_address == null ? 1 : 0
+  name                = "${var.project_name}-law"
+  resource_group_name = azurerm_resource_group.aks_resource_group.name
+  location            = azurerm_resource_group.aks_resource_group.location
+  sku                 = "PerGB2018"
+}
+
+resource "azurerm_log_analytics_solution" "new_log_analytics_solution" {
+  count                 = var.new_log_analitics && var.log_analitics_workspace_address == null ? 1 : 0
+  solution_name         = "Containers"
+  workspace_resource_id = azurerm_log_analytics_workspace.new_log_analytics_workspace[0].id
+  workspace_name        = azurerm_log_analytics_workspace.new_log_analytics_workspace[0].name
+  location              = azurerm_resource_group.aks_resource_group.location
+  resource_group_name   = azurerm_resource_group.aks_resource_group.name
+
+  plan {
+    publisher = "Microsoft"
+    product   = "OMSGallery/Containers"
+  }
+}
+
+locals {
+  # if the user sent us log_analitics_workspace_address to configer use it else created one (that is created only if use user asked for it and didn't specify predifined log_analitics_workspace_address
+  
+  log_analytics_workspace_id = var.log_analitics_workspace_address != null ? var.log_analitics_workspace_address : azurerm_log_analytics_workspace.new_log_analytics_workspace[0].id
+}
+
 
 # AKS
 
@@ -80,10 +111,20 @@ resource "azurerm_kubernetes_cluster" "main_aks" {
   tags = local.common_tags
 
   addon_profile {
+
     kube_dashboard {
-      enabled = false
+      enabled = var.kube_dashboard
+    }
+    oms_agent {
+      enabled = var.new_log_analitics
+      log_analytics_workspace_id = local.log_analytics_workspace_id
     }
   }
+
+  depends_on = [
+    azurerm_log_analytics_workspace.new_log_analytics_workspace,
+    # azurerm_log_analytics_solution.new_log_analytics_solution,
+  ]
 }
 
 # Network peering

@@ -28,3 +28,7 @@ output "aks_fqdn" {
 output "aks_name" {
   value = split("/", azurerm_kubernetes_cluster.main_aks.id)[length(split("/", azurerm_kubernetes_cluster.main_aks.id)) - 1]
 }
+
+output "log_analitics_workspace_id" {
+  value = local.log_analytics_workspace_id
+}
