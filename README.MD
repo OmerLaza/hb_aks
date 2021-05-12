@@ -35,12 +35,8 @@ this will add the appropriate config to your ```kubectl``` config file (aka kube
 3. Run ```kubectl get nodes``` 
 4. Run ```kubectl describe node``` to get list of all your nodes (you can also specify node by adding it's name in the end of the command), each one of them should have ```nvidia.com/gpu``` line under ```Capacity```.
 
-# limitations (current)
-- Only one node pool
-- No Spots
-
 # Tasks
-### TODO
+## TODO
 - Auto Scaling
 - Fix network hard coding (ip ranges)
 - identity
@@ -48,11 +44,12 @@ this will add the appropriate config to your ```kubectl``` config file (aka kube
 - Spot Support
 - firewall
 - policy (as code)
-### Done
+## Done
 - GPU support
 - VNets
 - sku size
 - tags
+- logs
 
 # Appendix
 ## Getting ARM_CLIENT_ID & ARM_CLIENT_SECRET
