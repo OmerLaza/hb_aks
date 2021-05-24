@@ -102,3 +102,82 @@ resource "kubernetes_daemonset" "gpu-resources" {
     }
   }
 }
+
+locals {
+  lowered_project_name = lower(var.project_name)
+  docker_registry_login_secret_name = "${local.lowered_project_name}-basic-auth"
+}
+
+resource "kubernetes_secret" "docker_registry_login_details" {
+  metadata {
+    name = local.docker_registry_login_secret_name
+    namespace = local.k8s_namespace
+  }
+
+  data = {
+    ".dockerconfigjson" = <<DOCKER
+{
+  "auths": {
+    "${var.docker_server}": {
+      "auth": "${base64encode("${var.docker_image_username}:${var.docker_image_password}")}"
+    }
+  }
+}
+DOCKER
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+}
+
+resource "kubernetes_deployment" "deploy_app" {
+  depends_on = [kubernetes_secret.docker_registry_login_details,kubernetes_namespace.gpu-resources]
+  timeouts {
+    create = "90s"
+    # delete = "2h"
+  }
+
+  metadata {
+    namespace = local.k8s_namespace
+    name = local.lowered_project_name
+    labels = {
+      project_name = local.lowered_project_name
+    }
+  }
+
+  spec {
+    replicas = var.num_of_replicas
+
+    selector {
+      match_labels = {
+        project_name = local.lowered_project_name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          project_name = local.lowered_project_name
+        }
+      }
+
+      spec {
+        image_pull_secrets {
+          name = local.docker_registry_login_secret_name
+          # docker-server = "firsttfreg.azurecr.io"
+          # docker-username= "FirstTFReg"
+          # docker-password="FQ+g3T+MKWqkf4ni9wq+oxr6VY=1m63r"
+        }
+        container {
+          image = var.docker_image_address
+          name  = local.lowered_project_name
+
+          resources {
+            limits   = var.resources_limits
+            requests = var.resources_requested
+          }
+          #TODO: add liveness_probe
+        }
+      }
+    }
+  }
+}

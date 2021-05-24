@@ -32,3 +32,7 @@ output "aks_name" {
 output "log_analitics_workspace_id" {
   value = local.log_analytics_workspace_id
 }
+
+output "project_name" {
+  value = var.project_name
+}
