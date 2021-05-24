@@ -6,7 +6,7 @@ variable "location" {
 
 variable "project_name" {
   type        = string
-  description = ""
+  description = "Name of the project, it's used for various nameing purposes."
 }
 
 variable "default_pool_vm_size" {
@@ -39,7 +39,7 @@ variable "env" {
 
 variable "tags" {
   type        = map(string)
-  description = ""
+  description = "List of tags to add to all the resources."
   default     = {}
 }
 
