@@ -109,6 +109,7 @@ locals {
 }
 
 resource "kubernetes_secret" "docker_registry_login_details" {
+  count = var.docker_server != null && var.docker_image_address != null ? 1 : 0
   metadata {
     name = local.docker_registry_login_secret_name
     namespace = local.k8s_namespace
@@ -116,13 +117,13 @@ resource "kubernetes_secret" "docker_registry_login_details" {
 
   data = {
     ".dockerconfigjson" = <<DOCKER
-{
-  "auths": {
-    "${var.docker_server}": {
-      "auth": "${base64encode("${var.docker_image_username}:${var.docker_image_password}")}"
-    }
-  }
-}
+      {
+        "auths": {
+          "${var.docker_server}": {
+            "auth": "${base64encode("${var.docker_image_username}:${var.docker_image_password}")}"
+          }
+        }
+      }
 DOCKER
   }
 
@@ -130,10 +131,11 @@ DOCKER
 }
 
 resource "kubernetes_deployment" "deploy_app" {
+  count = var.docker_image_address != null ? 1 : 0
   depends_on = [kubernetes_secret.docker_registry_login_details,kubernetes_namespace.gpu-resources]
   timeouts {
-    create = "90s"
-    # delete = "2h"
+    create = "10m"
+    delete = "1h"
   }
 
   metadata {
@@ -163,9 +165,6 @@ resource "kubernetes_deployment" "deploy_app" {
       spec {
         image_pull_secrets {
           name = local.docker_registry_login_secret_name
-          # docker-server = "firsttfreg.azurecr.io"
-          # docker-username= "FirstTFReg"
-          # docker-password="FQ+g3T+MKWqkf4ni9wq+oxr6VY=1m63r"
         }
         container {
           image = var.docker_image_address
@@ -176,6 +175,7 @@ resource "kubernetes_deployment" "deploy_app" {
             requests = var.resources_requested
           }
           #TODO: add liveness_probe
+          # liveness_probe = var.liveness_probe
         }
       }
     }
