@@ -26,34 +26,34 @@ variable "num_of_replicas" {
 variable "docker_image_address" {
   type        = string
   description = "Address of the docker image e.g \"azurereg.azurecr.io/some_image:latest\". If null the deployment and secret will not be created."
-  default = null
+  default     = null
 }
 
-variable "docker_server"{
-  type = string
+variable "docker_server" {
+  type        = string
   description = "Address of the docker server to get the image from e.g. \"azurereg.azurecr.io\"."
-  sensitive = false
-  default = null
+  sensitive   = false
+  default     = null
 }
 
-variable "docker_image_username"{
-  type = string
+variable "docker_image_username" {
+  type        = string
   description = "Username used to connect to the docker registry."
-  sensitive = false
-  default = null
+  sensitive   = false
+  default     = null
 }
 
-variable "docker_image_password"{
-  type = string
+variable "docker_image_password" {
+  type        = string
   description = "Password used to connect to the docker registry."
-  sensitive = true
-  default = null
+  sensitive   = true
+  default     = null
 }
 
 variable "resources_limits" {
   type        = map(string)
   description = "Resource limits for the deployment."
-  default = null
+  default     = null
   # exemple
   # {
   #   cpu    = "500m"
@@ -65,7 +65,7 @@ variable "resources_limits" {
 variable "resources_requested" {
   type        = map(string)
   description = "Resource requested for the deployment."
-  default = null
+  default     = null
   # exemple
   # {
   #   cpu    = "500m"
