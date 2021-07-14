@@ -2,6 +2,10 @@ output "resource_group" {
   value = azurerm_resource_group.aks_resource_group.name
 }
 
+output "location" {
+  value = azurerm_resource_group.aks_resource_group.location
+}
+
 output "client_certificate" {
   sensitive = true
   value     = azurerm_kubernetes_cluster.main_aks.kube_config.0.client_certificate
@@ -35,4 +39,8 @@ output "log_analitics_workspace_id" {
 
 output "project_name" {
   value = var.project_name
+}
+
+output "common_tags"{
+  value = local.common_tags
 }

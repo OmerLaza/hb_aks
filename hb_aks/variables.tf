@@ -47,11 +47,6 @@ variable "kubernetes_version" {
   type        = string
   description = "Version of the k8s cluster"
   default     = "1.19.9"
-  validation {
-    condition     = contains(["1.18.14", "1.18.17", "1.19.7", "1.19.9", "1.20.2", "1.20.5"], var.kubernetes_version)
-    error_message = "Your envirerment can be only one of: prod/dev/test."
-    # tried to make this dynamic but TF doesn't support it yet :( maybe in TF 0.16
-  }
 }
 
 variable "vent_peer" {

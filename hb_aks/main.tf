@@ -1,10 +1,18 @@
 terraform {
-  required_version = ">= 0.15, < 0.16" # pin the Terraform version to 0.15.X 
+  required_version = "~>1.0"
 
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
+      source  = "azurerm"
       version = "~>2.0" # pin the azure rm to compatible 2.0 (or higher version) version 
+    }
+    random = {
+      source  = "random"
+      version = "~>3.0"
+    }
+    time = {
+      source  = "time"
+      version = "~>0.7.2"
     }
   }
 }
@@ -110,7 +118,7 @@ resource "azurerm_log_analytics_solution" "new_log_analytics_solution" {
     product   = "OMSGallery/Containers"
   }
 
-    # Tags
+  # Tags
   tags = local.common_tags
 
   lifecycle {
@@ -123,7 +131,7 @@ resource "azurerm_log_analytics_solution" "new_log_analytics_solution" {
 locals {
   # if the user sent us log_analitics_workspace_address to configer use it else created one (that is created only if use user asked for it and didn't specify predifined log_analitics_workspace_address
 
-  log_analytics_workspace_id = var.log_analitics_workspace_address != null ? var.log_analitics_workspace_address : azurerm_log_analytics_workspace.new_log_analytics_workspace[0].id
+  log_analytics_workspace_id = var.log_analitics_workspace_address != null ? var.log_analitics_workspace_address : var.new_log_analitics != false ? azurerm_log_analytics_workspace.new_log_analytics_workspace[0].id : null
 }
 
 
